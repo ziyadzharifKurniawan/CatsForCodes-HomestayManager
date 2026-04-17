@@ -18,7 +18,7 @@ to the warmth of a confirmed stay,
 to the bittersweet closing of a journey completed.
 
 Nothing is forgotten. Nothing is misplaced.
-Everything flows—seamlessly, endlessly within a single, unified system.
+Everything flows seamlessly, endlessly within a single, unified system.
 
 CatsForCodes is not just management.
 It is order drawn from chaos,
