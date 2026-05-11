@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PetRa Garden Homestay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#f5f0e8;--warm:#faf8f4;--bark:#2c1f14;--barkl:#4a3728;
+  --terra:#c4603a;--terral:#e8836a;--moss:#4a6741;--mossl:#6a8f65;
+  --gold:#c9a84c;--goldl:#e0c070;--sand:#d4c5a9;--sandd:#b8a68a;
+  --blue:#3a6494;--bluel:#5a84b4;--purple:#6b4a8a;--purplel:#9a7abf;
+  --sdw:rgba(44,31,20,.12);--sdwd:rgba(44,31,20,.25);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--bark);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.35;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")}
+
+header{background:var(--bark);padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:300;box-shadow:0 2px 18px var(--sdwd)}
+.logo{font-family:'Playfair Display',serif;font-size:1.28rem;color:var(--cream)}
+.logo em{color:var(--gold);font-style:italic}
+.hbadge{background:var(--terra);color:#fff;font-family:'DM Mono',monospace;font-size:.63rem;padding:3px 11px;border-radius:20px;letter-spacing:.08em}
+
+.stats{background:var(--barkl);padding:.8rem 2.5rem;display:flex;gap:2rem;flex-wrap:wrap;align-items:center}
+.stat{display:flex;flex-direction:column;gap:1px}
+.slbl{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--sand);letter-spacing:.1em;text-transform:uppercase}
+.sval{font-family:'Playfair Display',serif;font-size:1.18rem;color:var(--cream);font-weight:700}
+.sval.g{color:var(--mossl)}.sval.au{color:var(--gold)}.sval.r{color:var(--terral)}.sval.p{color:var(--purplel)}
+
+.main{display:grid;grid-template-columns:520px 1fr;min-height:calc(100vh - 110px)}
+
+/* ══ FORM PANEL ══ */
+.fpanel{background:var(--warm);border-right:1.5px solid var(--sand);padding:1.4rem 1.7rem;
+  position:sticky;top:110px;height:calc(100vh - 110px);overflow-y:auto}
+.ptitle{font-family:'Playfair Display',serif;font-size:1.28rem;margin-bottom:.1rem}
+.psub{font-size:.74rem;color:var(--barkl);opacity:.6;margin-bottom:1.3rem}
+.sec{margin-bottom:1.2rem}
+.slabel{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--terra);margin-bottom:.6rem;display:flex;align-items:center;gap:7px}
+.slabel::after{content:'';flex:1;height:1px;background:var(--sand)}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+.r1{margin-bottom:.6rem}
+.fld{display:flex;flex-direction:column;gap:3px}
+label{font-size:.68rem;font-weight:500;color:var(--barkl)}
+input,select,textarea{font-family:'DM Sans',sans-serif;font-size:.82rem;background:var(--cream);
+  border:1.5px solid var(--sand);border-radius:7px;padding:7px 10px;color:var(--bark);
+  transition:border-color .2s,box-shadow .2s;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--terra);box-shadow:0 0 0 3px rgba(196,96,58,.1)}
+input::placeholder,textarea::placeholder{color:var(--sandd);opacity:.75}
+textarea{resize:none;min-height:48px}
+input.auto-field{background:#edf3ed;border-color:#b5cdb4;color:var(--moss);font-family:'DM Mono',monospace;font-weight:600}
+input.auto-field:focus{border-color:var(--moss);box-shadow:0 0 0 3px rgba(74,103,65,.1)}
+input.ov-field{background:#fff8ee;border-color:var(--gold)}
+input.ov-field:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.15)}
+
+/* ── DETAIL TABLE ── */
+.dtl-wrap{border:1.5px solid var(--sand);border-radius:10px;overflow:hidden;margin-bottom:.7rem}
+
+/* 5-column grid: Name | Revenue | Cost Plan | Actual Cost | (owner: % col) */
+.dtl-hdr{display:grid;grid-template-columns:128px 1fr 1fr 1fr;background:var(--bark);padding:7px 10px;gap:5px}
+.dtl-hdr span{font-family:'DM Mono',monospace;font-size:.57rem;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--sand);text-align:right}
+.dtl-hdr span:first-child{text-align:left}
+
+.dtl-row{display:grid;grid-template-columns:128px 1fr 1fr 1fr;align-items:center;
+  padding:5px 10px;gap:5px;border-bottom:1px solid var(--sand);transition:background .15s;position:relative}
+.dtl-row:last-child{border-bottom:none}
+.dtl-row:hover{background:rgba(212,197,169,.15)}
+/* owner row gets 5 columns */
+.dtl-row.owner-row{grid-template-columns:128px 1fr 1fr 1fr 62px}
+
+.dt-lbl{font-size:.79rem;font-weight:500;color:var(--bark);display:flex;flex-direction:column;gap:1px}
+.dt-lbl small{font-size:.6rem;color:var(--barkl);opacity:.55;font-weight:400}
+.dt-lbl.hl{color:var(--moss)}        /* Pemasukan */
+.dt-lbl.owner{color:var(--gold)}     /* Owner */
+.dt-lbl.util{color:var(--blue)}      /* Listrik / Air */
+
+.dtl-row input{padding:5px 7px;font-size:.77rem;text-align:right;border-radius:5px;
+  border:1.5px solid transparent;background:transparent;width:100%}
+.dtl-row input:focus{background:white;border-color:var(--terra);box-shadow:0 0 0 2px rgba(196,96,58,.08)}
+.dtl-row .c-rv input:focus{border-color:var(--moss)}
+.dtl-row .c-cp input:focus{border-color:var(--terra)}
+.dtl-row .c-ac input:focus{border-color:var(--blue)}
+.dtl-row .c-pct input:focus{border-color:var(--gold)}
+
+.c-rv{background:rgba(74,103,65,.06);border-radius:5px;padding:2px}
+.c-cp{background:rgba(196,96,58,.05);border-radius:5px;padding:2px}
+.c-ac{background:rgba(58,100,148,.05);border-radius:5px;padding:2px}
+.c-pct{background:rgba(201,168,76,.1);border-radius:5px;padding:2px}
+
+/* owner auto-calc display inside Revenue cell */
+.owner-auto{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--gold);text-align:right;
+  padding:5px 7px;opacity:.8;font-style:italic}
+
+.dtl-footer{display:grid;grid-template-columns:128px 1fr 1fr 1fr;background:var(--barkl);
+  padding:7px 10px;gap:5px;align-items:center}
+.dtl-footer span{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--cream);text-align:right;font-weight:500}
+.dtl-footer span:first-child{text-align:left;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;color:var(--sand)}
+.t-rv{color:var(--goldl)}.t-cp{color:var(--terral)}.t-ac{color:var(--bluel)}
+
+/* override + profit strip */
+.ov-strip{background:rgba(201,168,76,.07);border:1.5px solid var(--sand);border-top:none;
+  border-radius:0 0 10px 10px;padding:.65rem 1rem;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.55rem;margin-bottom:.7rem}
+.ov-strip .fld label{font-size:.61rem;opacity:.75}
+
+.submit-btn{width:100%;padding:11px;background:var(--terra);color:white;border:none;
+  border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.87rem;font-weight:500;
+  cursor:pointer;transition:background .2s,transform .1s,box-shadow .2s;
+  display:flex;align-items:center;justify-content:center;gap:7px;margin-top:.3rem}
+.submit-btn:hover{background:var(--terral);box-shadow:0 4px 18px rgba(196,96,58,.35)}
+.submit-btn:active{transform:scale(.98)}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed}
+
+/* ══ TABLE PANEL ══ */
+.tpanel{padding:1.6rem;overflow-x:auto}
+.thead-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:.8rem}
+.ttitle{font-family:'Playfair Display',serif;font-size:1.35rem}
+.tcount{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--barkl);opacity:.5;margin-top:2px}
+.sbox{display:flex;align-items:center;gap:7px;background:white;border:1.5px solid var(--sand);
+  border-radius:7px;padding:7px 12px;width:200px}
+.sbox input{border:none;background:transparent;padding:0;font-size:.8rem;width:100%}
+.sbox input:focus{box-shadow:none}
+
+table.dtable{width:100%;border-collapse:separate;border-spacing:0;font-size:.77rem;min-width:950px}
+table.dtable thead tr{background:var(--bark);color:var(--cream)}
+table.dtable thead th{padding:9px 11px;font-family:'DM Mono',monospace;font-size:.57rem;
+  letter-spacing:.07em;text-transform:uppercase;font-weight:400;white-space:nowrap;text-align:left}
+table.dtable thead th:first-child{border-radius:8px 0 0 0}
+table.dtable thead th:last-child{border-radius:0 8px 0 0;text-align:center}
+table.dtable tbody tr.brow{border-bottom:1px solid var(--sand);cursor:pointer;transition:background .15s}
+table.dtable tbody tr.brow:hover{background:rgba(212,197,169,.2)}
+table.dtable tbody td{padding:9px 11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+.mono{font-family:'DM Mono',monospace;font-size:.72rem}
+.bold{font-weight:600}
+.mbadge{display:inline-block;font-family:'DM Mono',monospace;font-size:.57rem;padding:2px 8px;border-radius:20px;letter-spacing:.05em}
+.mbadge.jan{background:#dde8f0;color:#2a4a5e}.mbadge.feb{background:#f0dde8;color:#5e2a4a}
+.mbadge.mar{background:#ddf0e0;color:#2a5e32}.mbadge.apr{background:#f0edd8;color:#5e4a2a}
+.pos{color:var(--moss);font-weight:600}.neg{color:var(--terra);font-weight:600}
+.rv-col{color:var(--moss)}.cp-col{color:var(--terra)}.ac-col{color:var(--blue)}
+.exp-icon{display:inline-block;transition:transform .2s;margin-right:5px;opacity:.4;font-size:.62rem}
+tr.expanded .exp-icon{transform:rotate(90deg)}
+.del-btn{background:none;border:1px solid var(--sandd);color:var(--sandd);width:24px;height:24px;
+  border-radius:5px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  font-size:.75rem;transition:all .15s}
+.del-btn:hover{background:var(--terra);border-color:var(--terra);color:white}
+
+/* Expand detail row */
+tr.drow td{padding:0!important;background:var(--warm);border-bottom:2px solid var(--sand)!important}
+.drow-inner{display:none;padding:.85rem 1.15rem}
+.drow-inner.open{display:block}
+.breakdown-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:.45rem;margin-bottom:.6rem}
+.bk-card{background:white;border:1px solid var(--sand);border-radius:8px;padding:.5rem .75rem}
+.bk-card.owner-card{border-color:var(--gold);background:#fffbf0}
+.bk-card.util-card{border-color:#c5d8ea;background:#f5f9fd}
+.bk-title{font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--barkl);opacity:.6;margin-bottom:4px}
+.bk-title.owner{color:var(--gold);opacity:1}
+.bk-title.util{color:var(--blue);opacity:1}
+.bk-line{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.bk-line:last-child{margin-bottom:0}
+.bk-k{font-size:.67rem;color:var(--barkl)}
+.bk-v{font-family:'DM Mono',monospace;font-size:.7rem}
+.bk-v.rv{color:var(--moss)}.bk-v.cp{color:var(--terra)}.bk-v.ac{color:var(--blue)}.bk-v.ow{color:var(--gold)}
+.bk-empty{opacity:.3;font-size:.7rem;font-style:italic}
+
+.summary-totals{display:flex;gap:1.5rem;flex-wrap:wrap;padding-top:.55rem;border-top:1px solid var(--sand)}
+.sum-item{display:flex;flex-direction:column;gap:1px}
+.sum-item .sk{font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.07em;text-transform:uppercase;color:var(--barkl);opacity:.6}
+.sum-item .sv{font-family:'Playfair Display',serif;font-size:.98rem;font-weight:700}
+.sv.rv{color:var(--moss)}.sv.cp{color:var(--terra)}.sv.ac{color:var(--blue)}.sv.ow{color:var(--gold)}
+.sv.pos{color:var(--moss)}.sv.neg{color:var(--terra)}
+
+.toast{position:fixed;bottom:1.8rem;right:1.8rem;background:var(--bark);color:var(--cream);
+  padding:12px 20px;border-radius:9px;font-size:.82rem;box-shadow:0 8px 28px var(--sdwd);
+  transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);
+  z-index:1000;border-left:4px solid var(--mossl);max-width:300px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{border-left-color:var(--terra)}
+.empty{text-align:center;padding:4rem;color:var(--barkl);opacity:.4}
+.empty .ei{font-size:2.5rem;margin-bottom:.7rem}
+.empty p{font-family:'Playfair Display',serif}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--sandd);border-radius:3px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">PetRa <em>Garden</em> Homestay</div>
+  <div class="hbadge">PADANG · 2026</div>
+</header>
+
+<div class="stats">
+  <div class="stat"><span class="slbl">Bookings</span><span class="sval au" id="s-bk">—</span></div>
+  <div class="stat"><span class="slbl">Total Revenue</span><span class="sval g" id="s-rv">—</span></div>
+  <div class="stat"><span class="slbl">Cost Plan</span><span class="sval r" id="s-cp">—</span></div>
+  <div class="stat"><span class="slbl">Actual Cost</span><span class="sval p" id="s-ac">—</span></div>
+  <div class="stat"><span class="slbl">Net Profit</span><span class="sval g" id="s-pr">—</span></div>
+  <div class="stat"><span class="slbl">Guests</span><span class="sval" id="s-gs">—</span></div>
+</div>
+
+<div class="main">
+
+<!-- ════════ FORM PANEL ════════ -->
+<aside class="fpanel">
+  <div class="ptitle">New Booking</div>
+  <div class="psub">Fill the details</div>
+  <form id="bform" autocomplete="off">
+
+    <div class="sec">
+      <div class="slabel">Booking Info</div>
+      <div class="r2">
+        <div class="fld"><label>Booking No.</label><input type="number" name="booking_no" placeholder="e.g. 33"/></div>
+        <div class="fld"><label>Invoice No.</label><input type="text" name="invoice_no" placeholder="e.g. 00114"/></div>
+      </div>
+      <div class="r2">
+        <div class="fld"><label>Property</label><input type="text" name="property" value="PetRa Homestay"/></div>
+        <div class="fld"><label>Payment Method</label>
+          <select name="payment_method">
+            <option value="">— select —</option>
+            <option>Cash / Tunai</option><option>Transfer Mandiri TA</option>
+            <option>booking Via Baby</option><option>Transfer BCA</option>
+            <option>OVO / GoPay</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slabel">Guest</div>
+      <div class="r2">
+        <div class="fld"><label>Guest Name *</label><input type="text" name="guest_name" placeholder="Full name" required/></div>
+        <div class="fld"><label>No. of Persons</label><input type="number" name="persons" placeholder="2" min="1"/></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slabel">Stay Period</div>
+      <div class="r3">
+        <div class="fld"><label>Check-in Date</label><input type="date" name="check_in_date"/></div>
+        <div class="fld"><label>Month</label>
+          <select name="month">
+            <option value="">—</option>
+            <option>Jan</option><option>Feb</option><option>Mar</option><option>Apr</option>
+            <option>May</option><option>Jun</option><option>Jul</option><option>Aug</option>
+            <option>Sep</option><option>Oct</option><option>Nov</option><option>Dec</option>
+          </select>
+        </div>
+        <div class="fld"><label>Nights</label><input type="text" name="nights" placeholder="1"/></div>
+      </div>
+      <div class="r1"><div class="fld"><label>Stay Dates (e.g. 07~08)</label>
+        <input type="text" name="stay_dates" placeholder="07~08"/></div></div>
+    </div>
+
+    <!-- ══ DETAIL BREAKDOWN ══ -->
+    <div class="sec">
+      <div class="slabel">Revenue &amp; Cost Breakdown by Category</div>
+
+      <div class="dtl-wrap">
+        <div class="dtl-hdr">
+          <span>Details</span>
+          <span style="color:var(--goldl)">Revenue (Rp)</span>
+          <span style="color:var(--terral)">Cost Plan (Rp)</span>
+          <span style="color:var(--bluel)">Actual Cost (Rp)</span>
+        </div>
+        <div id="detail-rows"></div>
+        <div class="dtl-footer">
+          <span>Sub Total</span>
+          <span class="t-rv" id="ft-rv">Rp 0</span>
+          <span class="t-cp" id="ft-cp">Rp 0</span>
+          <span class="t-ac" id="ft-ac">Rp 0</span>
+        </div>
+      </div>
+
+      <!-- overrides + profit -->
+      <div class="ov-strip">
+        <div class="fld">
+          <label>Revenue Total <em style="opacity:.5;font-style:normal">(auto/override)</em></label>
+          <input type="number" id="ov-rev" class="ov-field" placeholder="auto"/>
+        </div>
+        <div class="fld">
+          <label>Cost Plan Total <em style="opacity:.5;font-style:normal">(auto/override)</em></label>
+          <input type="number" id="ov-cp" class="ov-field" placeholder="auto"/>
+        </div>
+        <div class="fld">
+          <label>Actual Cost Total <em style="opacity:.5;font-style:normal">(auto/override)</em></label>
+          <input type="number" id="ov-ac" class="ov-field" placeholder="auto"/>
+        </div>
+        <div class="fld">
+          <label>Profit <em style="opacity:.5;font-style:normal">(auto)</em></label>
+          <input type="number" id="calc-profit" class="auto-field" placeholder="auto" readonly/>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slabel">Notes</div>
+      <div class="r1"><div class="fld">
+        <textarea name="remark" placeholder="Any remarks or special notes…"></textarea>
+      </div></div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="sbtn">
+      <span>＋</span> Save Booking to Neon Database
+    </button>
+  </form>
+</aside>
+
+<!-- ════════ TABLE PANEL ════════ -->
+<section class="tpanel">
+  <div class="thead-row">
+    <div>
+      <div class="ttitle">All Bookings</div>
+      <div class="tcount" id="row-count">Loading…</div>
+    </div>
+    <div class="sbox">
+      <span style="opacity:.45">🔍</span>
+      <input type="text" id="search" placeholder="Search guest, invoice…"/>
+    </div>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="dtable">
+      <thead><tr>
+        <th style="width:18px"></th>
+        <th>#</th><th>Invoice</th><th>Guest</th><th>Month</th>
+        <th>Check-in</th><th>Nights</th><th>Pax</th><th>Payment</th>
+        <th>Revenue</th><th>Cost Plan</th><th>Actual Cost</th><th>Profit</th>
+        <th style="text-align:center">Del</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Detail types ────────────────────────────────────────
+// Order: Pemasukan, Tambahan Kasur, Sarapan, Tips, Laundry, Chef,
+//        Owner, Karyawan, Listrik, Air (PDAM), Others
+const DETAILS = [
+  { key:'Pemasukan',      label:'Pemasukan',       cls:'hl',    rev:true,  cp:false, ac:false },
+  { key:'Tambahan Kasur', label:'Tambahan Kasur',  cls:'',      rev:false, cp:true,  ac:true  },
+  { key:'Sarapan',        label:'Sarapan',         cls:'',      rev:false, cp:true,  ac:true  },
+  { key:'Tips',           label:'Tips',            cls:'',      rev:false, cp:true,  ac:true  },
+  { key:'Laundry',        label:'Laundry',         cls:'',      rev:false, cp:true,  ac:true  },
+  { key:'Chef',           label:'Chef',            cls:'',      rev:false, cp:true,  ac:true  },
+  { key:'Owner',          label:'Owner',           cls:'owner', rev:true,  cp:true,  ac:true, isOwner:true },
+  { key:'Karyawan',       label:'Karyawan',        cls:'',      rev:false, cp:true,  ac:true  },
+  { key:'Listrik',        label:'Listrik',         cls:'util',  rev:false, cp:true,  ac:true  },
+  { key:'Air (PDAM)',     label:'Air (PDAM)',      cls:'util',  rev:false, cp:true,  ac:true  },
+  { key:'Others',         label:'Others',          cls:'',      rev:false, cp:true,  ac:true  },
+];
+
+let allBookings = [];
+const rp = n => n==null?'—':'Rp '+Number(n).toLocaleString('id-ID');
+const fd = d => d?new Date(d).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'2-digit'}):'—';
+function toast(msg,err=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show'+(err?' err':'');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.className='toast',3600);
+}
+
+// ── Build detail input rows ─────────────────────────────
+function buildDetailRows(){
+  const wrap=document.getElementById('detail-rows');
+  wrap.innerHTML=DETAILS.map(d=>{
+    const ownerExtra = d.isOwner
+      ? `<div class="c-pct"><input type="number" class="pct-inp" data-dt="${d.key}"
+           value="5" min="0" max="100" step="0.1" title="Owner % of revenue"/></div>`
+      : '';
+    const isOwnerRow = d.isOwner ? 'owner-row' : '';
+    // Owner revenue cell shows auto-calc, still manually overrideable
+    const revCell = d.rev
+      ? `<div class="c-rv"><input type="number" class="rev-inp" data-dt="${d.key}"
+           placeholder="${d.isOwner?'auto (5%)':'—'}" min="0"/></div>`
+      : `<div class="c-rv" style="opacity:.25;display:flex;align-items:center;justify-content:flex-end;padding:0 7px;font-size:.72rem">—</div>`;
+    const cpCell = d.cp
+      ? `<div class="c-cp"><input type="number" class="cp-inp" data-dt="${d.key}" placeholder="—" min="0"/></div>`
+      : `<div class="c-cp" style="opacity:.25;display:flex;align-items:center;justify-content:flex-end;padding:0 7px;font-size:.72rem">—</div>`;
+    const acCell = d.ac
+      ? `<div class="c-ac"><input type="number" class="ac-inp" data-dt="${d.key}" placeholder="—" min="0"/></div>`
+      : `<div class="c-ac" style="opacity:.25;display:flex;align-items:center;justify-content:flex-end;padding:0 7px;font-size:.72rem">—</div>`;
+    return `
+      <div class="dtl-row ${isOwnerRow}" data-dt="${d.key}">
+        <div class="dt-lbl ${d.cls}">${d.label}${d.isOwner?'<small id="owner-hint">= 5% rev</small>':''}</div>
+        ${revCell}${cpCell}${acCell}${ownerExtra}
+      </div>`;
+  }).join('');
+  wrap.querySelectorAll('input').forEach(i=>i.addEventListener('input',recalc));
+  ['ov-rev','ov-cp','ov-ac'].forEach(id=>document.getElementById(id).addEventListener('input',recalc));
+}
+
+function getRevTotal(){
+  // Sum all revenue inputs that are NOT the Owner row (Owner is derived FROM this total)
+  return DETAILS.filter(d => d.rev && !d.isOwner)
+    .reduce((s, d) => s + (Number(document.querySelector(`.rev-inp[data-dt="${d.key}"]`)?.value) || 0), 0);
+}
+
+function getOwnerAuto(){
+  const pctEl = document.querySelector('.pct-inp[data-dt="Owner"]');
+  const pct   = pctEl ? (Number(pctEl.value) || 5) : 5;
+  return Math.round(getRevTotal() * pct / 100);
+}
+
+function recalc(){
+  // Step 1: sum all explicit revenue inputs (Pemasukan + any other rev rows, excluding Owner)
+  const nonOwnerRev = getRevTotal();
+
+  // Step 2: Owner = % of total non-owner revenue
+  const ownerAuto = getOwnerAuto();  // uses nonOwnerRev internally
+
+  // Update owner hint label
+  const hint  = document.getElementById('owner-hint');
+  const pctEl = document.querySelector('.pct-inp[data-dt="Owner"]');
+  if(hint && pctEl) hint.textContent = `= ${pctEl.value||5}% → ${rp(ownerAuto)}`;
+
+  // Update owner cp-inp placeholder so user sees the auto value
+  const ownerCPInp = document.querySelector('.cp-inp[data-dt="Owner"]');
+  if(ownerCPInp && ownerCPInp.value==='') ownerCPInp.placeholder = Number(ownerAuto).toLocaleString('id-ID');
+
+  // Step 3: Revenue total = sum of all rev inputs (Owner does NOT add to revenue — it's a cost)
+  let sumRev = nonOwnerRev;
+  let sumCP  = 0;
+  let sumAC  = 0;
+
+  DETAILS.forEach(d => {
+    // Cost Plan: for Owner row, use manual input OR auto (5% of rev)
+    const cpEl  = document.querySelector(`.cp-inp[data-dt="${d.key}"]`);
+    const acEl  = document.querySelector(`.ac-inp[data-dt="${d.key}"]`);
+    const cpVal = d.isOwner
+      ? (cpEl?.value !== '' ? Number(cpEl.value) : ownerAuto)
+      : (Number(cpEl?.value) || 0);
+    sumCP += cpVal;
+    sumAC += Number(acEl?.value) || 0;
+  });
+
+  // Step 4: Update subtotal row in the table footer
+  document.getElementById('ft-rv').textContent = rp(sumRev);
+  document.getElementById('ft-cp').textContent = rp(sumCP);
+  document.getElementById('ft-ac').textContent = rp(sumAC);
+
+  // Step 5: Apply overrides if filled, then compute profit
+  const finalRev = document.getElementById('ov-rev').value !== '' ? Number(document.getElementById('ov-rev').value) : sumRev;
+  const finalCP  = document.getElementById('ov-cp').value  !== '' ? Number(document.getElementById('ov-cp').value)  : sumCP;
+  const finalAC  = document.getElementById('ov-ac').value  !== '' ? Number(document.getElementById('ov-ac').value)  : sumAC;
+
+  // Profit = Revenue − Actual Cost (if entered), else Revenue − Cost Plan
+  const costForProfit = finalAC > 0 ? finalAC : finalCP;
+  const profit = finalRev - costForProfit;
+
+  const pf = document.getElementById('calc-profit');
+  pf.value = profit;
+  pf.style.color = profit >= 0 ? 'var(--moss)' : 'var(--terra)';
+}
+
+function getLineItems(){
+  const ownerAuto = getOwnerAuto();
+  return DETAILS.map(d => {
+    const revEl = document.querySelector(`.rev-inp[data-dt="${d.key}"]`);
+    const cpEl  = document.querySelector(`.cp-inp[data-dt="${d.key}"]`);
+    const acEl  = document.querySelector(`.ac-inp[data-dt="${d.key}"]`);
+    const pctEl = document.querySelector(`.pct-inp[data-dt="${d.key}"]`);
+
+    // Owner: rev_total = null (not revenue), cost_plan = manual OR auto 5%
+    const revVal = d.isOwner
+      ? null
+      : (revEl ? Number(revEl.value) || null : null);
+    const cpVal = d.isOwner
+      ? (cpEl?.value !== '' ? Number(cpEl.value) : ownerAuto)
+      : (cpEl ? Number(cpEl.value) || null : null);
+
+    return {
+      detail_type:  d.key,
+      rev_total:    revVal,
+      cost_plan_rp: cpVal,
+      actual_cost:  acEl ? Number(acEl.value) || null : null,
+      owner_pct:    pctEl ? Number(pctEl.value) || 5 : null,
+    };
+  }).filter(i => i.rev_total || i.cost_plan_rp || i.actual_cost);
+}
+
+function clearForm(){
+  document.getElementById('bform').reset();
+  document.querySelector('[name=property]').value='PetRa Homestay';
+  document.querySelectorAll('#detail-rows input').forEach(i=>{
+    if(i.classList.contains('pct-inp')) i.value='5';
+    else i.value='';
+  });
+  ['ov-rev','ov-cp','ov-ac'].forEach(id=>document.getElementById(id).value='');
+  recalc();
+}
+
+// ── Stats ───────────────────────────────────────────────
+async function loadStats(){
+  try{
+    const {data:d}=await fetch('/api/stats').then(r=>r.json());
+    document.getElementById('s-bk').textContent=d.total_bookings;
+    document.getElementById('s-rv').textContent=rp(d.total_revenue);
+    document.getElementById('s-cp').textContent=rp(d.total_cost_plan);
+    document.getElementById('s-ac').textContent=rp(d.total_actual_cost);
+    document.getElementById('s-pr').textContent=rp(d.total_profit);
+    document.getElementById('s-gs').textContent=d.total_guests;
+    document.getElementById('s-pr').className='sval '+(Number(d.total_profit)>=0?'g':'r');
+  }catch{}
+}
+
+// ── Bookings table ──────────────────────────────────────
+async function loadBookings(){
+  try{
+    const {data}=await fetch('/api/bookings').then(r=>r.json());
+    allBookings=data; renderTable(data);
+  }catch(e){toast('Load error: '+e.message,true);}
+}
+
+const OWNER_TYPES  = new Set(['Owner']);
+const UTIL_TYPES   = new Set(['Listrik','Air (PDAM)']);
+
+function renderTable(bks){
+  document.getElementById('row-count').textContent=bks.length+' booking'+(bks.length!==1?'s':'');
+  const tb=document.getElementById('tbody');
+  if(!bks.length){
+    tb.innerHTML=`<tr><td colspan="14"><div class="empty"><div class="ei">🌿</div><p>No bookings yet</p></div></td></tr>`;
+    return;
+  }
+  tb.innerHTML=bks.map(b=>{
+    const pc=b.result_rp==null?'':(b.result_rp>=0?'pos':'neg');
+    const mc=(b.month||'').toLowerCase();
+    const hasItems=b.line_items&&b.line_items.length;
+    const cards=hasItems?b.line_items.map(it=>{
+      const isOwner=OWNER_TYPES.has(it.detail_type);
+      const isUtil=UTIL_TYPES.has(it.detail_type);
+      const hasData=it.rev_total||it.cost_plan_rp||it.actual_cost;
+      const pctNote=isOwner&&it.owner_pct?` (${it.owner_pct}%)`:'';
+      return `<div class="bk-card${isOwner?' owner-card':isUtil?' util-card':''}">
+        <div class="bk-title${isOwner?' owner':isUtil?' util':''}">${it.detail_type}${pctNote}</div>
+        ${!hasData?'<div class="bk-empty">—</div>':`
+          ${it.rev_total   !=null?`<div class="bk-line"><span class="bk-k">Revenue</span><span class="bk-v ${isOwner?'ow':'rv'}">${rp(it.rev_total)}</span></div>`:''}
+          ${it.cost_plan_rp!=null?`<div class="bk-line"><span class="bk-k">Cost Plan</span><span class="bk-v cp">${rp(it.cost_plan_rp)}</span></div>`:''}
+          ${it.actual_cost !=null?`<div class="bk-line"><span class="bk-k">Actual</span><span class="bk-v ac">${rp(it.actual_cost)}</span></div>`:''}
+        `}
+      </div>`;
+    }).join(''):'<div style="opacity:.4;font-size:.76rem">No detail breakdown</div>';
+
+    return `
+      <tr class="brow" data-id="${b.id}" onclick="toggleRow(this)">
+        <td><span class="exp-icon">▶</span></td>
+        <td class="mono">${b.booking_no??b.id}</td>
+        <td class="mono">${b.invoice_no??'—'}</td>
+        <td class="bold" title="${b.guest_name??''}">${b.guest_name??'—'}</td>
+        <td><span class="mbadge ${mc}">${b.month??'—'}</span></td>
+        <td class="mono">${fd(b.check_in_date)}</td>
+        <td>${b.nights??'—'}</td>
+        <td>${b.persons??'—'}</td>
+        <td style="max-width:110px">${b.payment_method??'—'}</td>
+        <td class="mono rv-col">${rp(b.revenue_total)}</td>
+        <td class="mono cp-col">${rp(b.cost_plan_total)}</td>
+        <td class="mono ac-col">${rp(b.actual_cost_total)}</td>
+        <td class="mono ${pc}">${rp(b.result_rp)}</td>
+        <td style="text-align:center">
+          <button class="del-btn" onclick="event.stopPropagation();delBooking(${b.id})">✕</button>
+        </td>
+      </tr>
+      <tr class="drow" id="dr-${b.id}">
+        <td colspan="14">
+          <div class="drow-inner" id="di-${b.id}">
+            <div class="breakdown-grid">${cards}</div>
+            <div class="summary-totals">
+              <div class="sum-item"><span class="sk">Revenue</span><span class="sv rv">${rp(b.revenue_total)}</span></div>
+              <div class="sum-item"><span class="sk">Cost Plan</span><span class="sv cp">${rp(b.cost_plan_total)}</span></div>
+              <div class="sum-item"><span class="sk">Actual Cost</span><span class="sv ac">${rp(b.actual_cost_total)}</span></div>
+              <div class="sum-item"><span class="sk">Profit</span><span class="sv ${b.result_rp>=0?'pos':'neg'}">${rp(b.result_rp)}</span></div>
+              ${b.remark?`<div class="sum-item"><span class="sk">Remark</span><span class="sv" style="font-family:'DM Sans',sans-serif;font-size:.78rem">${b.remark}</span></div>`:''}
+            </div>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function toggleRow(row){
+  if(row.classList.contains('drow')) return;
+  const id=row.dataset.id, inner=document.getElementById('di-'+id);
+  const wasOpen=inner.classList.contains('open');
+  document.querySelectorAll('.drow-inner.open').forEach(e=>e.classList.remove('open'));
+  document.querySelectorAll('tr.brow.expanded').forEach(e=>e.classList.remove('expanded'));
+  if(!wasOpen){inner.classList.add('open');row.classList.add('expanded');}
+}
+
+async function delBooking(id){
+  if(!confirm('Delete this booking and all its detail items?')) return;
+  const {success,error}=await fetch('/api/bookings/'+id,{method:'DELETE'}).then(r=>r.json());
+  if(success){toast('Booking deleted.');loadBookings();loadStats();}
+  else toast('Error: '+error,true);
+}
+
+// ── Form submit ─────────────────────────────────────────
+document.getElementById('bform').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const btn=document.getElementById('sbtn');
+  btn.disabled=true; btn.textContent='Saving…';
+  const f=e.target;
+  const line_items=getLineItems();
+
+  const sumRev=DETAILS.filter(d=>d.key==='Pemasukan')
+    .reduce((s,d)=>s+(Number(document.querySelector(`.rev-inp[data-dt="${d.key}"]`)?.value)||0),0);
+  const sumCP =line_items.reduce((s,i)=>s+(Number(i.cost_plan_rp)||0),0);
+  const sumAC =line_items.reduce((s,i)=>s+(Number(i.actual_cost)||0),0);
+
+  const body={
+    booking_no:    f.booking_no.value?+f.booking_no.value:null,
+    invoice_no:    f.invoice_no.value||null,
+    property:      f.property.value||null,
+    payment_method:f.payment_method.value||null,
+    guest_name:    f.guest_name.value,
+    persons:       f.persons.value?+f.persons.value:null,
+    check_in_date: f.check_in_date.value||null,
+    month:         f.month.value||null,
+    stay_dates:    f.stay_dates.value||null,
+    nights:        f.nights.value||null,
+    remark:        f.remark.value||null,
+    revenue_total_override:     document.getElementById('ov-rev').value!==''?+document.getElementById('ov-rev').value:null,
+    cost_plan_total_override:   document.getElementById('ov-cp').value !==''?+document.getElementById('ov-cp').value :null,
+    actual_cost_total_override: document.getElementById('ov-ac').value !==''?+document.getElementById('ov-ac').value :null,
+    line_items,
+  };
+
+  try{
+    const {success,error}=await fetch('/api/bookings',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)
+    }).then(r=>r.json());
+    if(success){toast('✓ Booking saved to Neon!');clearForm();loadBookings();loadStats();}
+    else toast('Error: '+error,true);
+  }catch(err){toast('Connection error: '+err.message,true);}
+  btn.disabled=false;btn.innerHTML='<span>＋</span> Save Booking to Neon Database';
+});
+
+// ── Search ──────────────────────────────────────────────
+document.getElementById('search').addEventListener('input',e=>{
+  const q=e.target.value.toLowerCase();
+  renderTable(allBookings.filter(b=>
+    (b.guest_name??'').toLowerCase().includes(q)||
+    (b.invoice_no??'').toLowerCase().includes(q)||
+    (b.month??'').toLowerCase().includes(q)||
+    (b.payment_method??'').toLowerCase().includes(q)
+  ));
+});
+
+// ── Init ────────────────────────────────────────────────
+buildDetailRows();
+loadStats();
+loadBookings();
+</script>
+</body>
+</html>
