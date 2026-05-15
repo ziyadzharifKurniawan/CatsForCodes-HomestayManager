@@ -1,0 +1,12 @@
+[
+  {
+    "ts": "2026-05-11T05:38:14.225Z",
+    "action": "DELETE",
+    "detail": "Booking #1  TEST deleted"
+  },
+  {
+    "ts": "2026-05-11T05:38:03.019Z",
+    "action": "LOAD",
+    "detail": "Restored from Slot 2 \"test\" (33 bookings, saved 5/11/2026, 12:33:02 PM)"
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "name": "petra-garden-homestay-next",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -H 127.0.0.1 -p 3001",
+    "build": "next build",
+    "start": "next start -H 127.0.0.1 -p 3001",
+    "dev:3000": "next dev -H 127.0.0.1 -p 3000",
+    "start:3000": "next start -H 127.0.0.1 -p 3000"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.9",
+    "next": "^15.3.2",
+    "pg": "^8.16.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.27.0",
+    "eslint-config-next": "^15.3.2"
+  }
+}
